@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{%  block contenido %}
+    <h1 class="text-center">Edit Rol</h1>
+    
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{ error|escape }}</strong> 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>   
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{ error|escape }}</strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>   
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if band == True %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Rol Updated</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>   
+        </div>
+    {% endif %}
+    
+    {% if response and band == False %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {% for i in response %}
+                <strong>{{i}}</strong>
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>   
+        </div>    
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" placeholder="name" name="name" value="{{rol.name}}">
+                </div>
+            </div>
+        </div>
+       
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <input type="submit" class="form-control btn btn-primary" value="Edit">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <a href="{% url 'rols' %}" class="btn btn-primary form-control">Back</a>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

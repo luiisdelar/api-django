@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{%  block contenido %}
+    <h1 class="text-center">Create User</h1>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{ error|escape }}</strong> 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>   
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{ error|escape }}</strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>   
+            </div>
+        {% endfor %}
+    {% else %}
+        {% if band == True %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>User Add</strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>   
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {% if response and band == False and not response.email %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {% for i in response %}
+                <strong>{{i}}</strong>
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>   
+        </div>
+    {% endif %}
+    {% if response.email and band == False %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {% for i in response.email %}
+                <strong>{{i}}</strong>
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>   
+        </div>
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" placeholder="username" name="username" value="{{form.username.value}}">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="mail" class="form-control" placeholder="email" name="email" value="{{form.email.value}}">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select name="rol" class="custom-select">
+                        {% for rol in rols %}
+                            <option value="{{rol.name}}">{{rol.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="password" name="password">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control" placeholder="confirm password" name="confirm_password">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <input type="submit" class="form-control btn btn-primary" value="Submit">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <a href="{% url 'users' %}" class="btn btn-primary form-control">Back</a>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

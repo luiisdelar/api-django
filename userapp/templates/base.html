@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project</title>
+    {% load static %}
+
+    <!-- Bootstrap -->
+    <link href="{% static '/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light justify-content-between" style="background-color: #bdbdbd;">
+        <div>  
+            <a class="navbar-brand" href="{% url 'users' %}"> Users App - {{user.username}}</a>
+        </div>  
+        
+    </nav>
+
+    <div class="container">
+        {% block contenido %}
+
+
+        {% endblock %}
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/personal.js' %}"></script>
+</body>
+</html>
