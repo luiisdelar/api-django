@@ -7,7 +7,7 @@ class FormUser(forms.Form):
     rol = forms.CharField(max_length=30)
     password = forms.CharField(max_length=30)
     confirm_password = forms.CharField(max_length=30)
-
+    
     def clean(self):
         cleaned_data = super(FormUser, self).clean()
         password = cleaned_data.get("password")

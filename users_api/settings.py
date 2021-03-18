@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'userapp',
     'rolsapp',
 ]
@@ -129,3 +130,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = reverse_lazy('users')
+
+LOGOUT_REDIRECT_URL = reverse_lazy('login')
+
+AUTH_USER_MODEL = 'api.User'
+# AUTHENTICATION_BACKENDS = ('userapp.backend.UserAuthentificacionBackend',)

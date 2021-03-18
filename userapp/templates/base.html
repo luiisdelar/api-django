@@ -11,10 +11,12 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light justify-content-between" style="background-color: #bdbdbd;">
-        <div>  
-            <a class="navbar-brand" href="{% url 'users' %}"> Users App - {{user.username}}</a>
-        </div>  
+    <nav class="navbar navbar-expand-lg navbar-light justify-content-between" style="background-color: #bdbdbd;">        
+        <a class="navbar-brand" href="{% url 'users' %}"> Users App </a>
+       
+        {% if user.username %}
+            <a href="{% url 'logout' %}" class="navbar-brand">Logout: {{user.username}}</a>
+        {% endif %}
         
     </nav>
 

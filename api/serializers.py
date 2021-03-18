@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, Rol
+from django.contrib.auth.models import Group
 from rest_framework.validators import UniqueValidator
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,10 +11,16 @@ class UserSerializer(serializers.ModelSerializer):
     
 
     def create(self, validated_data):
-        user = User(**validated_data)
+        user = User(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            rol=validated_data['rol'],
+        )
         
         if User.objects.filter(username=validated_data['username']):
             raise serializers.ValidationError('This username already exist.')
+        
+        user.set_password(validated_data['password'])
         user.save()
         return user
 

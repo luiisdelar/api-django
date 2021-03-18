@@ -16,6 +16,7 @@ def users(request):
 
 def createUser(request):
     rols = Rol.objects.all()
+    
     if request.method == 'POST':
         miFormulario = FormUser(request.POST)
         if miFormulario.is_valid():
@@ -26,8 +27,8 @@ def createUser(request):
                 band = False
             else:
                 band = True
-                
-            return render(request, 'create-user.html', {'form': miFormulario, 'rols': rols, 'band': band, 'response': response.json()})
+            
+            return render(request, 'create-user.html', {'form': miFormulario, 'rols': rols, 'band': band, 'response': response})
         else:
             return render(request, 'create-user.html', {'form': miFormulario, 'rols': rols})
     else:
@@ -60,4 +61,3 @@ def editUser(request, pk):
             return render(request, 'edit-user.html', {'user': user, 'form': miFormulario, 'rols': rols})
     
     return render(request, 'edit-user.html', {'user': user, 'rols': rols})
-    
