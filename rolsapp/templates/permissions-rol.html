@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{%  block contenido %}
+    <h1 class="text-center mb-2">Permissions rol: {{rol.name}}</h1>
+    
+    
+    {% if exito == True %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Permissions Updated</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>   
+        </div>    
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mt-4 mb-2 row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <h3 class="text-left">Users</h3>
+                </div>
+                <div class="form-group custom-control custom-checkbox">
+                    {% if permisos.add_user %}
+                        <input type="checkbox" checked id="addu" name="add_user">
+                    {% else %}
+                        <input type="checkbox" id="addu" name="add_user"> 
+                    {% endif %}
+                    <label for="addu">Create</label>
+                </div>
+                <div class="form-group custom-control custom-checkbox">
+                    {% if permisos.change_user %}
+                        <input type="checkbox" checked id="upu" name="change_user">
+                    {% else %}
+                        <input type="checkbox" id="upu" name="change_user">
+                    {% endif %}
+                    <label for="upu">Update</label>
+                </div>
+                <div class="form-group custom-control custom-checkbox">
+                    {% if permisos.delete_user %}
+                        <input type="checkbox" checked id="delu" name="delete_user">
+                    {% else %}
+                        <input type="checkbox" id="delu" name="delete_user">
+                    {% endif %}
+                    <label for="delu">Delete</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <h3 class="text-left">Rols</h3>
+                </div>
+                <div class="form-group custom-control custom-checkbox">
+                    {% if permisos.add_rol %}
+                        <input type="checkbox" checked id="addr" name="add_rol">
+                    {% else %}
+                        <input type="checkbox" id="addr" name="add_rol">
+                    {% endif %}
+                    <label for="addr">Create</label>
+                </div>
+                <div class="form-group custom-control custom-checkbox">
+                    {% if permisos.change_rol %}
+                        <input type="checkbox" checked id="upr" name="change_rol">
+                    {% else %}
+                        <input type="checkbox" id="upr" name="change_rol">
+                    {% endif %}
+                    <label for="upr">Update</label>
+                </div>
+                <div class="form-group custom-control custom-checkbox">
+                    {% if permisos.delete_rol %}
+                        <input type="checkbox" checked id="delr" name="delete_rol">
+                    {% else %}
+                        <input type="checkbox" id="delr" name="delete_rol">
+                    {% endif %}
+                    <label for="delr">Delete</label>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <input type="submit" class="form-control btn btn-primary" value="Accept">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <a href="{% url 'rols' %}" class="btn btn-primary form-control">Back</a>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

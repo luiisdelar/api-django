@@ -7,11 +7,16 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from api.models import User, Rol
 from django.http import HttpResponse
-
+from rest_framework.authtoken.models import Token
+from requests.auth import HTTPBasicAuth
 # Create your views here.
 
 def users(request):
-    response = requests.get('http://127.0.0.1:8000/api/user-list/').json()
+    #token = Token.objects.get(user=request.user)
+    #headers = {'Authorization': 'Token '+token.key}
+    #datos = {'username': 'lalo', 'password':'lalo'}
+
+    response = requests.get('http://127.0.0.1:8000/api/users/').json()
     return render(request, 'users.html', {'response': response})
 
 def createUser(request):
@@ -21,7 +26,7 @@ def createUser(request):
         miFormulario = FormUser(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-            response = requests.post('http://127.0.0.1:8000/api/user-create/', data=datos)            
+            response = requests.post('http://127.0.0.1:8000/api/v2/crear/', data=datos)            
             
             if response.status_code == 400:
                 band = False

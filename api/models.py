@@ -1,11 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
+from django.contrib.auth.models import AbstractUser, Permission
 # Create your models here.
 
 class Rol(models.Model):
     name = models.CharField(max_length=30, null=False, blank=False)
-
+    permisos = models.ManyToManyField(Permission, blank = True)
     def __str__(self):
         return self.name
 
@@ -18,4 +17,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-

@@ -15,18 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.views import LoginView, LogoutView
-from userapp.views_auth_api import Login
-from rest_framework.authtoken import views
-from api.views import Login
+from api.views import Login, Logout
 
 urlpatterns = [
+    path('api/',include('api.urls')),
+    path('loginapi/', Login.as_view(), name="loginapi"),
+    path('logout/', Logout.as_view(), name="logout"),
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
     path('users/', include('userapp.urls')),
     path('rols/', include('rolsapp.urls')),
-    path('accounts/login/', LoginView.as_view(template_name='login.html'),name="login"),
-    path('logout/', LogoutView.as_view(), name="logout"),
-    path('', Login.as_view(), name="Logiin"),
-    path('loginapi/', Login.as_view(), name="loginapi")
 ]   
