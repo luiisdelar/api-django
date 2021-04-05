@@ -8,12 +8,16 @@ from django.urls import reverse
 from api.models import Rol, User
 from django.http import HttpResponse
 from django.contrib.auth.models import Permission
+from userapp.decorators import email_verified, verified_permission
 # Create your views here.
 
+@email_verified
 def rols(request):
     response = requests.get('http://127.0.0.1:8000/api/rols/').json()
     return render(request, 'rols.html', {'response': response})
 
+@email_verified
+@verified_permission(flag='add_rol')
 def createRol(request):
     if request.method == 'POST':
         miFormulario = FormRol(request.POST)
@@ -32,6 +36,8 @@ def createRol(request):
     else:
         return render(request, 'create-rol.html')
 
+@email_verified
+@verified_permission(flag='change_rol')
 def editRol(request, pk):
     rol = Rol.objects.get(id=pk)
     
@@ -52,16 +58,21 @@ def editRol(request, pk):
             return render(request, 'edit-rol.html', {'rol': rol, 'form': miFormulario})
     
     return render(request, 'edit-rol.html', {'rol': rol})
-    
+
+@email_verified
+@verified_permission(flag='delete_rol')
 def deleteRol(request, pk):
     if request.method == 'GET':
         response = requests.delete('http://127.0.0.1:8000/api/rols/delete/'+str(pk)+'/')
         return render(request, 'delete-rol.html') 
 
+@email_verified
+@verified_permission(flag='changue_rol')
 def permissionsRol(request, pk):
     rol = Rol.objects.get(id=pk)
+    
     permisos = rol.permisos.all()
-
+    
     dicc = {
         'add_user': False, 
         'change_user': False,
@@ -72,65 +83,61 @@ def permissionsRol(request, pk):
     }
 
     for permiso in permisos:
-        if permiso.id == 21:
+        if permiso.id == 4:
             dicc['add_rol'] = True
-        if permiso.id == 22:
+        if permiso.id == 5:
             dicc['change_rol'] = True
-        if permiso.id == 23:
+        if permiso.id == 6:
             dicc['delete_rol'] = True
-        if permiso.id == 25:
+        if permiso.id == 1:
             dicc['add_user'] = True
-        if permiso.id == 26:
+        if permiso.id == 2:
             dicc['change_user'] = True
-        if permiso.id == 27:
+        if permiso.id == 3:
             dicc['delete_user'] = True
 
-    
-    #rol.permisos.add(25)    
-    #rol.save()
-     
     if request.method == 'POST':
         
         if request.POST.get('add_rol') == 'on':
-            rol.permisos.add(21)
+            rol.permisos.add(4)
             dicc['add_rol'] = True
         else:
-            rol.permisos.remove(21)
+            rol.permisos.remove(4)
             dicc['add_rol'] = False
 
         if request.POST.get('change_rol') == 'on':
-            rol.permisos.add(22)
+            rol.permisos.add(5)
             dicc['change_rol'] = True
         else:
-            rol.permisos.remove(22)
+            rol.permisos.remove(5)
             dicc['change_rol'] = False
 
         if request.POST.get('delete_rol') == 'on':
-            rol.permisos.add(23)
+            rol.permisos.add(6)
             dicc['delete_rol'] = True
         else:
-            rol.permisos.remove(23)
+            rol.permisos.remove(6)
             dicc['delete_rol'] = False
 
         if request.POST.get('add_user') == 'on':
-            rol.permisos.add(25)
+            rol.permisos.add(1)
             dicc['add_user'] = True
         else:
-            rol.permisos.remove(25)
+            rol.permisos.remove(1)
             dicc['add_user'] = False
 
         if request.POST.get('change_user') == 'on':
-            rol.permisos.add(26)
+            rol.permisos.add(2)
             dicc['change_user'] = True
         else:
-            rol.permisos.remove(26)
+            rol.permisos.remove(2)
             dicc['change_user'] = False
 
         if request.POST.get('delete_user') == 'on':
-            rol.permisos.add(27)
+            rol.permisos.add(3)
             dicc['delete_user'] = True
         else:
-            rol.permisos.remove(27)
+            rol.permisos.remove(3)
             dicc['delete_user'] = False
 
         rol.save()        

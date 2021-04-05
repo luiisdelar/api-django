@@ -12,12 +12,21 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light justify-content-between" style="background-color: #bdbdbd;">        
-        <a class="navbar-brand" href="{% url 'users' %}"> Users App </a>
-       
         {% if user.username %}
-            <a href="" class="navbar-brand">Logout: {{user.username}}</a>
-        {% endif %}
+        <div>
+            <a class="navbar-brand btn btn-primary" href="{% url 'users' %}"> Users </a>
+            <a class="navbar-brand btn btn-primary" href="{% url 'rols' %}"> Rols </a>
+        </div>
         
+        <div>
+            <a href="{% url 'profile' %}" class="navbar-brand btn btn-secondary"> User: {{user.username}}</a>
+            <a href="#" class="navbar-brand btn btn-secondary"> Rol: {{user.rol}}</a>
+            <a href="{% url 'logout' %}" class="navbar-brand btn btn-secondary">Logout</a>    
+        </div>
+        {% else %}
+            <a class="navbar-brand btn" href="#"> Users App </a>
+        {% endif %}
+
     </nav>
 
     <div class="container">

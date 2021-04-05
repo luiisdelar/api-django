@@ -24,8 +24,8 @@ from rest_framework.views import APIView
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    #permission_classes = (IsAuthenticated,)
-    #authentication_classes = (TokenAuthentication,)
+    #permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication,]
  
 class UserCreate(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -37,6 +37,13 @@ class UserUpdate(generics.UpdateAPIView):
     serializer_class = UserSerializer
     #permission_classes = (IsAuthenticated,)
     #authentication_classes = (TokenAuthentication,)
+
+class UserDelete(generics.DestroyAPIView):
+    queryset = User.objects.all()
+
+class UserView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class Login(FormView):  
     template_name = 'loginapi.html'
@@ -55,8 +62,8 @@ class Login(FormView):
     def form_valid(self, form):
         user = authenticate(username = form.cleaned_data['username'], password = form.cleaned_data['password'])
         token,_ = Token.objects.get_or_create(user = user)
-        
-        if token:
+        response = requests.get('http://127.0.0.1:8000/api/users/', auth=(form.cleaned_data['username'],form.cleaned_data['password']))
+        if token:    
             login(self.request, form.get_user())
             return super(Login, self).form_valid(form)
 

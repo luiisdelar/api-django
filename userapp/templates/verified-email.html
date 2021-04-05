@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+    <h1 class="text-center">Verified Email</h1>
+
+    {% if verified == False %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Code incorrect</strong> 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>   
+        </div>
+    {% endif %}
+
+    {% if not verified or verified == False %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label>Please enter the code sent to {{user.email}}</label>
+                        <input type="text" class="form-control" placeholder="code" name="verified_code">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <input type="submit" class="form-control btn btn-primary" value="Verified">
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+    
+    {% if verified == True %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>User verified</strong>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="form-group">
+                    <a href="{% url 'users' %}" class="btn btn-primary form-control">Home</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+    

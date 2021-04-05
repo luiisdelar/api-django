@@ -2,8 +2,9 @@
 
 {% load static %}
 
-{%  block contenido %}
-    <h1 class="text-center">Edit User</h1>
+{% block contenido %}
+
+    <h1 class="text-center">Register User</h1>
     
     {% if form.errors %}
         {% for field in form %}
@@ -24,45 +25,31 @@
                 </button>   
             </div>
         {% endfor %}
+    {% else %}
+        {% if band %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>User Register -> <a href="{% url 'login' %}">Login!</a></strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>   
+            </div>
+        {% endif %}
     {% endif %}
-    {% if band == True %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>User Updated</strong> 
+    {% if band == False %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Can't register user</strong> 
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>   
         </div>
     {% endif %}
-    
-    {% if response and band == False %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {% for i in response %}
-                <strong>{{i}}</strong>
-            {% endfor %}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>   
-        </div>    
-    {% endif %}
-
-    {% if response.email and band == False %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {% for i in response.email %}
-                <strong>{{i}}</strong>
-            {% endfor %}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>   
-        </div>
-    {% endif %}
-  
     <form method="POST">
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" placeholder="username" name="username" value="{{userr.username}}">
+                    <input type="text" class="form-control" placeholder="username" name="username" value="{{form.username.value}}">
                 </div>
             </div>
         </div>
@@ -70,23 +57,7 @@
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="mail" class="form-control" placeholder="email" name="email" value="{{userr.email}}">
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-sm-12">
-                <div class="form-group">
-                    <label>Rol</label>
-                    <select name="rol" class="custom-select">
-                        {% for rol in rols %}
-                            {% if rol.name == user.rol %}
-                                <option selected="true" value="{{rol.name}}">{{rol.name}}</option>
-                            {% else %}
-                                <option value="{{rol.name}}">{{rol.name}}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
+                    <input type="mail" class="form-control" placeholder="email" name="email" value="{{form.email.value}}">
                 </div>
             </div>
         </div>
@@ -94,7 +65,7 @@
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" class="form-control" placeholder="password" name="password" value="{{userr.password}}">
+                    <input type="password" class="form-control" placeholder="password" name="password">
                 </div>
             </div>
         </div>
@@ -102,23 +73,25 @@
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" class="form-control" placeholder="confirm password" name="confirm_password" value="{{userr.password}}">
+                    <input type="password" class="form-control" placeholder="confirm password" name="confirm_password">
                 </div>
             </div>
         </div>
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <input type="submit" class="form-control btn btn-primary" value="Edit">
+                    <input type="hidden" name="rol" value="invitado">
+                    <input type="submit" class="form-control btn btn-primary" value="Submit">
                 </div>
             </div>
         </div>
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12">
                 <div class="form-group">
-                    <a href="{% url 'users' %}" class="btn btn-primary form-control">Back</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary form-control">Back</a>
                 </div>
             </div>
         </div>
     </form>
-{% endblock %}
+
+{% endblock %}  
