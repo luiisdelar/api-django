@@ -12,15 +12,16 @@
                 </div>
                 <div class="card-body">
                     <ul>
-                        <li><h4>Username: {{userr.username}}</h4></li>
-                        <li><h4>Email: {{userr.email}}</h4></li>
-                        <li><h4>Rol: {{userr.rol}}</h4></li>
-                        <li><h4>Email Verified: 
-                            {% if userr.user_verified %} 
-                                Yes 
-                            {% else %}
-                                No
-                            {% endif %}
+                        <li>Username:<h4> {{userr.username}}</h4></li>
+                        <li>Email:<h4> {{userr.email}}</h4></li>
+                        <li>Rol:<h4> {{userr.rol}}</h4></li>
+                        <li>Email Verified:
+                            <h4> 
+                                {% if userr.user_verified %} 
+                                    Yes 
+                                {% else %}
+                                    No
+                                {% endif %}
                             </h4>
                         </li>
                     </ul>

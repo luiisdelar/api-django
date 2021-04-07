@@ -43,7 +43,21 @@ INSTALLED_APPS = [
     'api',
     'userapp',
     'rolsapp',
+    'social_django',
+    'allauth', 
+    'allauth.account', 
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'django.contrib.sites',
+    'sslserver',
 ]
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.TokenAuthentication',
+#     ]
+# }
+
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -153,3 +167,33 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'luisortegadlr@gmail.com'
 EMAIL_HOST_PASSWORD = 'password'
+
+
+#----------conf de auth con facebook---------#
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.linkedin.LinkedinOAuth2',
+    'social_core.backends.instagram.InstagramOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 2
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1192551927829284'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'f18e0290f02aa18f8fcbd246ff4c8234'
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         }
+#     }
+# }
+
+#----------------------------------------------

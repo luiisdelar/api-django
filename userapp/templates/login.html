@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+{% load socialaccount %}
+{% providers_media_js %}
 {% load static %}
 
 {% block contenido %}
@@ -34,9 +35,9 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12">
-                <div class="form-group justify-content-end d-flex">
-                    <a href="{% url 'forgotPassword' %}">¿Forgot Password?</a>
-                </div>
+                <p class="text-right mb-0"><a href="{% url 'forgotPassword' %}">¿Forgot Password?</a></p>
+                <p class="text-right mb-0"><a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a></p>
+                <p class="text-right "><a href="{% provider_login_url 'google' %}">Login with Google</a></p>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -53,7 +54,6 @@
                 </div>
             </div>
         </div>
-        
     </form>
 
 {% endblock %}

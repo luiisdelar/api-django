@@ -32,7 +32,7 @@ def users(request):
     #token = Token.objects.get(user=request.user)
     #headers = {'Authorization': 'Token '+token.key}
     
-    response = requests.get('http://127.0.0.1:8000/api/users/').json()
+    response = requests.get('https://localhost:8000/api/users/', verify=False).json()
     return render(request, 'users.html', {'response': response})
     
 @email_verified
@@ -44,7 +44,7 @@ def createUser(request):
         miFormulario = FormUser(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-            response = requests.post('http://127.0.0.1:8000/api/users/create/', data=datos)            
+            response = requests.post('https://localhost:8000/api/users/create/', data=datos, verify=False)            
             
             if response.status_code == 400:
                 band = False
@@ -65,7 +65,7 @@ def registerUser(request):
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
             
-            response = requests.post('http://127.0.0.1:8000/api/users/create/', data=datos)                        
+            response = requests.post('https://localhost:8000/api/users/create/', data=datos, verify=False)                        
             
             if response.status_code != 200 and response.status_code != 201:
                 band = False
@@ -80,7 +80,7 @@ def registerUser(request):
 @verified_permission(flag='delete_user')
 def deleteUser(request, pk):
     if request.method == 'GET':
-        response = requests.delete('http://127.0.0.1:8000/api/users/delete/'+str(pk)+'/')
+        response = requests.delete('https://localhost:8000/api/users/delete/'+str(pk)+'/', verify=False)
         return render(request, 'delete.html')
 
 @email_verified
@@ -95,7 +95,7 @@ def editUser(request, pk):
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
 
-            response = requests.put('http://127.0.0.1:8000/api/users/update/'+str(pk)+'/', data=datos)
+            response = requests.put('https://localhost:8000/api/users/update/'+str(pk)+'/', data=datos, verify=False)
             user = User.objects.get(id=pk)
             
             if response.status_code == 400:
@@ -139,6 +139,7 @@ def forgotPassword(request):
         return render(request, 'forgot-password.html', {'error': error})
 
 def profile(request):
+
     return render(request, 'profile.html', {'userr': request.user})
 
 def permission_denied(request):

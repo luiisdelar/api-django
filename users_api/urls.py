@@ -15,17 +15,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from api.views import Login, Logout
 from django.contrib.auth.views import LoginView, LogoutView
+from userapp.myLogin import Login, Logout
 
 urlpatterns = [
     path('api/',include('api.urls')),
-    path('loginapi/', Login.as_view(), name="loginapi"),
-    path('logoutt/', Logout.as_view(), name="logoutt"),
+#    path('loginapi/', Login.as_view(), name="loginapi"),
+#    path('logoutt/', Logout.as_view(), name="logoutt"),
     path('admin/', admin.site.urls),
     path('users/', include('userapp.urls')),
     path('rols/', include('rolsapp.urls')),
-    path('accounts/login/', LoginView.as_view(template_name='login.html'), name="login"),
-    path('logout/', LogoutView.as_view(), name="logout"),
-    path('', LoginView.as_view(template_name='login.html'), name="login"),
+#    path('accounts/login/', LoginView.as_view(template_name='login.html'), name="login"),
+#    path('logout/', LogoutView.as_view(), name="logout"),
+#    path('', LoginView.as_view(template_name='login.html'), name="login"),
+
+    path('accounts/login/', Login.as_view(), name="login"),
+    path('logout/', Logout.as_view(), name="logout"),
+    path('', Login.as_view(template_name='login.html'), name="login"),
+
+
+    #ruta de login de facebook 
+    path('social-auth/', include('social_django.urls', namespace="social")),
+    
+    #ruta de login de google
+    path('accounts/', include('allauth.urls')),
 ]   
