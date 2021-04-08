@@ -12,4 +12,5 @@ urlpatterns = [
     path('verified-email/', login_required(views.verifiedEmail), name='verfiedemail'),
     path('forgot-password/', views.forgotPassword, name='forgotPassword'),
     path('permission-denied/', views.permission_denied, name='permission_denied'),
+    path('token-expired/', views.token_expired, name="logouttoken"),
 ]

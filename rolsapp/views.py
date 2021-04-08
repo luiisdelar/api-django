@@ -8,22 +8,27 @@ from django.urls import reverse
 from api.models import Rol, User
 from django.http import HttpResponse
 from django.contrib.auth.models import Permission
-from userapp.decorators import email_verified, verified_permission
+from userapp.decorators import email_verified, verified_permission, token_venc
 # Create your views here.
 
 @email_verified
+@token_venc
 def rols(request):
-    response = requests.get('http://127.0.0.1:8000/api/rols/').json()
+    headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+    response = requests.get('https://localhost:8000/api/rols/', headers=headers, verify=False).json()
     return render(request, 'rols.html', {'response': response})
 
 @email_verified
 @verified_permission(flag='add_rol')
+@token_venc
 def createRol(request):
     if request.method == 'POST':
         miFormulario = FormRol(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-            response = requests.post('http://127.0.0.1:8000/api/rols/create', data=datos)            
+
+            headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+            response = requests.post('https://localhost:8000/api/rols/create', data=datos, headers=headers, verify=False)            
             
             if response.status_code == 400:
                 band = False
@@ -38,6 +43,7 @@ def createRol(request):
 
 @email_verified
 @verified_permission(flag='change_rol')
+@token_venc
 def editRol(request, pk):
     rol = Rol.objects.get(id=pk)
     
@@ -45,7 +51,9 @@ def editRol(request, pk):
         miFormulario = FormRol(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-            response = requests.put('http://127.0.0.1:8000/api/rols/update/'+str(pk)+'/', data=datos)
+
+            headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+            response = requests.put('https://127localhost00/api/rols/update/'+str(pk)+'/', data=datos, headers=headers, verify=False)
             rol = Rol.objects.get(id=pk)
 
             if response.status_code == 400:
@@ -61,13 +69,16 @@ def editRol(request, pk):
 
 @email_verified
 @verified_permission(flag='delete_rol')
+@token_venc
 def deleteRol(request, pk):
     if request.method == 'GET':
-        response = requests.delete('http://127.0.0.1:8000/api/rols/delete/'+str(pk)+'/')
+        headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+        response = requests.delete('https://localhost:8000/api/rols/delete/'+str(pk)+'/', headers=headers, verify=False)
         return render(request, 'delete-rol.html') 
 
 @email_verified
 @verified_permission(flag='changue_rol')
+@token_venc
 def permissionsRol(request, pk):
     rol = Rol.objects.get(id=pk)
     

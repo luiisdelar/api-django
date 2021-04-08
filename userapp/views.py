@@ -9,7 +9,7 @@ from api.models import User, Rol
 from django.http import HttpResponse
 from rest_framework.authtoken.models import Token
 from requests.auth import HTTPBasicAuth
-from .decorators import email_verified, verified_permission
+from .decorators import email_verified, verified_permission, token_venc
 from django.utils.crypto import get_random_string
 from django.core.mail import EmailMessage
 
@@ -27,16 +27,18 @@ def verifiedEmail(request):
         return render(request, 'verified-email.html', {'verified': verified})
     return render(request, 'verified-email.html')
 
+
+
 @email_verified
+@token_venc
 def users(request):
-    #token = Token.objects.get(user=request.user)
-    #headers = {'Authorization': 'Token '+token.key}
-    
-    response = requests.get('https://localhost:8000/api/users/', verify=False).json()
+    headers = {'Authorization': 'Token '+str(request.user.auth_token)}    
+    response = requests.get('https://localhost:8000/api/users/', verify=False, headers=headers).json()
     return render(request, 'users.html', {'response': response})
     
 @email_verified
 @verified_permission(flag='add_user')
+@token_venc
 def createUser(request): 
     rols = Rol.objects.all()
     
@@ -44,7 +46,9 @@ def createUser(request):
         miFormulario = FormUser(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-            response = requests.post('https://localhost:8000/api/users/create/', data=datos, verify=False)            
+            
+            headers = {'Authorization': 'Token '+str(request.user.auth_token)}    
+            response = requests.post('https://localhost:8000/api/users/create/', data=datos, verify=False, headers=headers)            
             
             if response.status_code == 400:
                 band = False
@@ -78,13 +82,16 @@ def registerUser(request):
 
 @email_verified
 @verified_permission(flag='delete_user')
+@token_venc
 def deleteUser(request, pk):
     if request.method == 'GET':
-        response = requests.delete('https://localhost:8000/api/users/delete/'+str(pk)+'/', verify=False)
+        headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+        response = requests.delete('https://localhost:8000/api/users/delete/'+str(pk)+'/', headers=headers,verify=False)
         return render(request, 'delete.html')
 
 @email_verified
 @verified_permission(flag='changue_user')
+@token_venc
 def editUser(request, pk):
     user = User.objects.get(id=pk)
     rols = Rol.objects.all()
@@ -94,8 +101,10 @@ def editUser(request, pk):
         miFormulario = FormUser(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-
-            response = requests.put('https://localhost:8000/api/users/update/'+str(pk)+'/', data=datos, verify=False)
+            
+            headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+            response = requests.put('https://localhost:8000/api/users/update/'+str(pk)+'/', data=datos, verify=False, headers=headers)
+            
             user = User.objects.get(id=pk)
             
             if response.status_code == 400:
@@ -138,9 +147,12 @@ def forgotPassword(request):
     else:
         return render(request, 'forgot-password.html', {'error': error})
 
-def profile(request):
 
+def profile(request):
     return render(request, 'profile.html', {'userr': request.user})
 
 def permission_denied(request):
     return render(request, 'permission-denied.html')
+
+def token_expired(request):
+    return render(request, 'token-expired.html')

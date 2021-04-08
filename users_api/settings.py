@@ -52,23 +52,6 @@ INSTALLED_APPS = [
     'sslserver',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ]
-# }
-
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework.authentication.TokenAuthentication',
-#     ),
-#     'DEFAULT_PERMISSION_CLASSES': (
-#         'rest_framework.permissions.IsAuthenticated',
-#     )
-# }
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -158,7 +141,6 @@ LOGIN_REDIRECT_URL = reverse_lazy('profile')
 LOGOUT_REDIRECT_URL = reverse_lazy('login')
 
 AUTH_USER_MODEL = 'api.User'
-# AUTHENTICATION_BACKENDS = ('userapp.backend.UserAuthentificacionBackend',)
 
 #configuracion de envio de mail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -197,3 +179,5 @@ SOCIAL_AUTH_FACEBOOK_SECRET = 'f18e0290f02aa18f8fcbd246ff4c8234'
 # }
 
 #----------------------------------------------
+
+TOKEN_EXPIRED_AFTER_SECONDS = 1200 #1200 s = 20 min

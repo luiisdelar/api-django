@@ -16,8 +16,9 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.views import LoginView, LogoutView
 
-#class Login(LoginView):
-#    template_name = 'login.html'
+
+from userapp.expiring_token import ExpiringTokenAuthentication
+
 
 class Login(LoginView):  
     template_name = 'login.html'
@@ -53,4 +54,3 @@ class Logout(LogoutView):
             return HttpResponseRedirect(next_page)
         return super().dispatch(request, *args, **kwargs)
 
-        

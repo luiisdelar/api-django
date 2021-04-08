@@ -13,24 +13,28 @@ class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     authentication_classes = [TokenAuthentication,]
- 
+    permission_classes = (IsAuthenticated,)
+    
 class UserCreate(generics.CreateAPIView):
     serializer_class = UserSerializer
-    #authentication_classes = (TokenAuthentication,)
+    
 
 class UserUpdate(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
 
 class UserDelete(generics.DestroyAPIView):
     queryset = User.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
 
 class UserView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
 
 #
 # rols
@@ -38,18 +42,21 @@ class UserView(generics.RetrieveAPIView):
 class RolList(generics.ListCreateAPIView):
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
-    #permission_classes = (IsAuthenticated,)
-    #authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
 
 class RolCreate(generics.CreateAPIView):
     serializer_class = RolSerializer
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
 
 class RolUpdate(generics.UpdateAPIView):
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
 
 class RolDelete(generics.DestroyAPIView):
     queryset = Rol.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)

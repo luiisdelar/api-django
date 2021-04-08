@@ -4,6 +4,28 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from api.models import Rol
+from django.contrib.auth import (
+    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
+    logout as auth_logout, update_session_auth_hash,
+)
+from userapp.expiring_token import ExpiringTokenAuthentication
+
+
+def token_venc(view_func):
+    @wraps(view_func)
+    def wrapped_view(request, *args, **kwargs):
+        token = request.user.auth_token
+        url = reverse('logouttoken')
+        if token:
+            token_expire = ExpiringTokenAuthentication()
+            user, token, message = token_expire.authenticate_credentials(token)
+            if message == 'Token expired':
+                request.user.auth_token.delete()
+                auth_logout(request)
+                return HttpResponseRedirect(url)
+         
+        return view_func(request, *args, **kwargs)
+    return wrapped_view
 
 def email_verified(view_func):
     @wraps(view_func)
