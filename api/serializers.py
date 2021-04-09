@@ -104,16 +104,16 @@ class RolSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This rol name already exist.')
         instance.name = validated_data.get('name', instance.name)
         
-        if validated_data['permisos']:
-            instance.permisos.remove(1)
-            instance.permisos.remove(2)
-            instance.permisos.remove(3)
-            instance.permisos.remove(4)
-            instance.permisos.remove(5)
-            instance.permisos.remove(6)
+        
+        instance.permisos.remove(1)
+        instance.permisos.remove(2)
+        instance.permisos.remove(3)
+        instance.permisos.remove(4)
+        instance.permisos.remove(5)
+        instance.permisos.remove(6)
 
-            for permiso in validated_data['permisos']:
-                instance.permisos.add(permiso)
+        for permiso in validated_data['permisos']:
+            instance.permisos.add(permiso)
         
         instance.save()   
         return instance

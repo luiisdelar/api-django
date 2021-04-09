@@ -57,6 +57,8 @@ def createUser(request):
         else:
             return render(request, 'create-user.html', {'form': miFormulario, 'rols': rols})
     else:
+        if request.user.rol != 'admin':
+            print(rols)
         return render(request, 'create-user.html', {'rols': rols})
 
 def registerUser(request):
@@ -109,7 +111,7 @@ def editUser(request, pk):
                 band = False
             else:
                 band = True
-            print(response)
+            
             return render(request, 'edit-user.html', {'userr': user, 'response': response.json(), 'band': band, 'rols': rols})
         else:
             return render(request, 'edit-user.html', {'userr': user, 'form': miFormulario, 'rols': rols})
