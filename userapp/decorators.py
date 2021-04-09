@@ -1,3 +1,4 @@
+import requests
 from functools import wraps
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -44,15 +45,38 @@ def verified_permission(flag):
         def wrapped_view(request, *args, **kwargs):
             url = reverse('permission_denied')
 
-            if request.user.rol == 'invitado':
+            try: 
+                headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+                rol = requests.get('https://localhost:8000/api/rols/view-name/'+request.user.rol+'/', headers=headers, verify=False).json()
+            except:
                 return HttpResponseRedirect(url)
 
-            rol = Rol.objects.get(name=request.user.rol)
+            if request.user.rol == 'invitado':
+                return HttpResponseRedirect(url)
             
-            for x in rol.permisos.all():
-                if x.name == flag:
+            band = permiso_a_int(flag)
+
+            for x in rol['permisos']:
+                if x == band:
                     return f(request, *args, **kwargs)
             
             return HttpResponseRedirect(url)
         return wrapped_view
     return _verified_permission
+
+
+def permiso_a_int(flag):
+    if flag == 'add_rol':
+        flag = 4
+    if flag == 'changue_rol':
+        flag = 5
+    if flag == 'delete_rol':
+        flag = 6
+    if flag == 'add_user':
+        flag = 1
+    if flag == 'delete_user':
+        flag = 3
+    if flag == 'changue_user':
+        flag = 2
+    
+    return flag

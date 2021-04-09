@@ -16,17 +16,15 @@ from django.core.mail import EmailMessage
 # Create your views here.
 
 def verifiedEmail(request):
-    user = User.objects.get(id=request.user.id)
     verified = False
-
     if request.method == 'POST':
         if request.POST.get('verified_code') == request.user.verified_code:
-            user.user_verified = True
-            user.save()
+            datos = {'username': request.user.username, 'password': request.user.password, 'user_verified': True}
+            headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+            requests.put('https://localhost:8000/api/users/update/'+str(request.user.id)+'/', data=datos, verify=False, headers=headers)
             verified = True
         return render(request, 'verified-email.html', {'verified': verified})
     return render(request, 'verified-email.html')
-
 
 
 @email_verified
@@ -40,14 +38,14 @@ def users(request):
 @verified_permission(flag='add_user')
 @token_venc
 def createUser(request): 
-    rols = Rol.objects.all()
+    
+    headers = {'Authorization': 'Token '+str(request.user.auth_token)}    
+    rols = requests.get('https://localhost:8000/api/rols/', verify=False, headers=headers).json()
     
     if request.method == 'POST':
         miFormulario = FormUser(request.POST)
         if miFormulario.is_valid():
-            datos = miFormulario.cleaned_data
-            
-            headers = {'Authorization': 'Token '+str(request.user.auth_token)}    
+            datos = miFormulario.cleaned_data        
             response = requests.post('https://localhost:8000/api/users/create/', data=datos, verify=False, headers=headers)            
             
             if response.status_code == 400:
@@ -86,15 +84,17 @@ def registerUser(request):
 def deleteUser(request, pk):
     if request.method == 'GET':
         headers = {'Authorization': 'Token '+str(request.user.auth_token)}
-        response = requests.delete('https://localhost:8000/api/users/delete/'+str(pk)+'/', headers=headers,verify=False)
+        requests.delete('https://localhost:8000/api/users/delete/'+str(pk)+'/', headers=headers,verify=False)
         return render(request, 'delete.html')
 
 @email_verified
 @verified_permission(flag='changue_user')
 @token_venc
 def editUser(request, pk):
-    user = User.objects.get(id=pk)
-    rols = Rol.objects.all()
+  
+    headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+    user = requests.get('https://localhost:8000/api/users/view/'+str(pk)+'/', verify=False, headers=headers).json()
+    rols = requests.get('https://localhost:8000/api/rols/', verify=False, headers=headers).json()
 
     if request.method == 'POST':
        
@@ -102,19 +102,17 @@ def editUser(request, pk):
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
             
-            headers = {'Authorization': 'Token '+str(request.user.auth_token)}
             response = requests.put('https://localhost:8000/api/users/update/'+str(pk)+'/', data=datos, verify=False, headers=headers)
-            
-            user = User.objects.get(id=pk)
+            user = requests.get('https://localhost:8000/api/users/view/'+str(pk)+'/', verify=False, headers=headers).json()
             
             if response.status_code == 400:
                 band = False
             else:
                 band = True
-            
+            print(response)
             return render(request, 'edit-user.html', {'userr': user, 'response': response.json(), 'band': band, 'rols': rols})
         else:
-            return render(request, 'edit-user.html', {'user': user, 'form': miFormulario, 'rols': rols})
+            return render(request, 'edit-user.html', {'userr': user, 'form': miFormulario, 'rols': rols})
     
     return render(request, 'edit-user.html', {'userr': user, 'rols': rols})
 
@@ -126,20 +124,15 @@ def forgotPassword(request):
         miFormulario = FormForgotPassword(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-        
+
             try:
-                user = User.objects.get(email=datos['email'])
-                new_pass = get_random_string(length=10)
-                user.set_password(new_pass)
-                user.save()
-                body = 'Su nueva contraseña es: '+new_pass
-                email = EmailMessage('Restauración de contraseña', body, to=[user.email])
-                email.send()
+                response = requests.post('https://localhost:8000/api/users/forgot-password/', data=datos, verify=False)
             except:
                 error = True 
-                user = None
             
-            return render(request, 'forgot-password.html', {'user_': user, 'error': error})
+            if response.status_code != 201:
+                error = True
+            return render(request, 'forgot-password.html', {'error': error})
         else:
             error = True
             return render(request, 'forgot-password.html', {'error': error})
@@ -149,6 +142,13 @@ def forgotPassword(request):
 
 
 def profile(request):
+
+    #si el user viene del login social se activa y se le asigna rol de invitado
+    if request.user.is_authenticated and request.user.verified_code == None:
+        headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+        datos = {'username': request.user.username, 'password': request.user.password,'rol': 'invitado', 'user_verified': True}
+        requests.put('https://localhost:8000/api/users/update/'+str(request.user.id)+'/', data=datos, verify=False, headers=headers)
+        
     return render(request, 'profile.html', {'userr': request.user})
 
 def permission_denied(request):

@@ -180,4 +180,4 @@ SOCIAL_AUTH_FACEBOOK_SECRET = 'f18e0290f02aa18f8fcbd246ff4c8234'
 
 #----------------------------------------------
 
-TOKEN_EXPIRED_AFTER_SECONDS = 1200 #1200 s = 20 min
+TOKEN_EXPIRED_AFTER_SECONDS = 1200000 #1200 s = 20 min

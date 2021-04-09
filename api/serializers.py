@@ -3,6 +3,7 @@ from .models import User, Rol
 from rest_framework.validators import UniqueValidator
 from django.utils.crypto import get_random_string
 from django.core.mail import EmailMessage
+from django.http import HttpResponseRedirect
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=30)
@@ -39,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        user_old = User.objects.filter(username=validated_data['username']).first()
+        user_old = User.objects.get(id=instance.id)
         
         if user_old and user_old.id != instance.id:
             raise serializers.ValidationError('This username already exist.')
@@ -50,14 +51,38 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(validated_data['password'])
         
         instance.rol = validated_data.get('rol', instance.rol)
-        user_oldd = User.objects.filter(email=validated_data['email']).first()
+        
+        try:
+            user_oldd = User.objects.get(email=validated_data['email'])
+        except:
+            user_oldd = None
+        
         
         if user_oldd and user_oldd.id != instance.id:
             raise serializers.ValidationError('This email already exist.')
         
+        if validated_data['user_verified']:
+            instance.user_verified = True
+
         instance.email = validated_data['email']
         instance.save()   
         return instance
+
+class ForgotPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email',)
+
+    def create(self, validated_data):
+        user = User.objects.get(email = validated_data['email'])
+        new_pass = get_random_string(length=10)
+        user.set_password(new_pass)
+        user.save()
+        body = 'Su nueva contraseña es: '+new_pass
+        email = EmailMessage('Restauración de contraseña', body, to=[user.email])
+        #email.send()
+        user.save()
+        return user
 
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,5 +103,22 @@ class RolSerializer(serializers.ModelSerializer):
         if rol_old and rol_old.id != instance.id:
             raise serializers.ValidationError('This rol name already exist.')
         instance.name = validated_data.get('name', instance.name)
+        
+        if validated_data['permisos']:
+            instance.permisos.remove(1)
+            instance.permisos.remove(2)
+            instance.permisos.remove(3)
+            instance.permisos.remove(4)
+            instance.permisos.remove(5)
+            instance.permisos.remove(6)
+
+            for permiso in validated_data['permisos']:
+                instance.permisos.add(permiso)
+        
         instance.save()   
         return instance
+
+class RolNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = '__all__'

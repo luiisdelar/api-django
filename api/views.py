@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, RolSerializer
+from .serializers import UserSerializer, RolSerializer, ForgotPasswordSerializer, RolNameSerializer
 from .models import User, Rol 
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -36,10 +36,21 @@ class UserView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication,]
     permission_classes = (IsAuthenticated,)
 
+class ForgotPassword(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = ForgotPasswordSerializer
+
+
 #
 # rols
 #
 class RolList(generics.ListCreateAPIView):
+    queryset = Rol.objects.all()
+    serializer_class = RolSerializer
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
+
+class RolView(generics.RetrieveAPIView):
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
     authentication_classes = [TokenAuthentication,]
@@ -60,3 +71,13 @@ class RolDelete(generics.DestroyAPIView):
     queryset = Rol.objects.all()
     authentication_classes = [TokenAuthentication,]
     permission_classes = (IsAuthenticated,)
+
+class RolViewName(generics.RetrieveAPIView):
+    queryset = Rol.objects.all()
+    serializer_class = RolNameSerializer
+    lookup_field = 'name'
+    authentication_classes = [TokenAuthentication,]
+    permission_classes = (IsAuthenticated,)
+#
+#  permisos
+#

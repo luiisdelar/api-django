@@ -42,19 +42,19 @@ def createRol(request):
         return render(request, 'create-rol.html')
 
 @email_verified
-@verified_permission(flag='change_rol')
+@verified_permission(flag='changue_rol')
 @token_venc
 def editRol(request, pk):
-    rol = Rol.objects.get(id=pk)
+    headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+    rol = requests.get('https://localhost:8000/api/rols/view/'+str(pk)+'/', headers=headers, verify=False).json()
     
     if request.method == 'POST':
         miFormulario = FormRol(request.POST)
         if miFormulario.is_valid():
             datos = miFormulario.cleaned_data
-
-            headers = {'Authorization': 'Token '+str(request.user.auth_token)}
-            response = requests.put('https://127localhost00/api/rols/update/'+str(pk)+'/', data=datos, headers=headers, verify=False)
-            rol = Rol.objects.get(id=pk)
+            
+            response = requests.put('https://localhost:8000/api/rols/update/'+str(pk)+'/', data=datos, headers=headers, verify=False)
+            rol = requests.get('https://localhost:8000/api/rols/view/'+str(pk)+'/', headers=headers, verify=False).json()
 
             if response.status_code == 400:
                 band = False
@@ -80,78 +80,90 @@ def deleteRol(request, pk):
 @verified_permission(flag='changue_rol')
 @token_venc
 def permissionsRol(request, pk):
-    rol = Rol.objects.get(id=pk)
-    
-    permisos = rol.permisos.all()
-    
+    headers = {'Authorization': 'Token '+str(request.user.auth_token)}
+    rol = requests.get('https://localhost:8000/api/rols/view/'+str(pk)+'/', headers=headers, verify=False).json()
+   
     dicc = {
         'add_user': False, 
-        'change_user': False,
+        'changue_user': False,
         'delete_user': False,
         'add_rol': False, 
-        'change_rol': False,
+        'changue_rol': False,
         'delete_rol': False,
     }
 
-    for permiso in permisos:
-        if permiso.id == 4:
+    for permiso in rol['permisos']:
+        if permiso == 4:
             dicc['add_rol'] = True
-        if permiso.id == 5:
-            dicc['change_rol'] = True
-        if permiso.id == 6:
+        if permiso == 5:
+            dicc['changue_rol'] = True
+        if permiso == 6:
             dicc['delete_rol'] = True
-        if permiso.id == 1:
+        if permiso == 1:
             dicc['add_user'] = True
-        if permiso.id == 2:
-            dicc['change_user'] = True
-        if permiso.id == 3:
+        if permiso == 2:
+            dicc['changue_user'] = True
+        if permiso == 3:
             dicc['delete_user'] = True
 
     if request.method == 'POST':
         
-        if request.POST.get('add_rol') == 'on':
-            rol.permisos.add(4)
+        if request.POST.get('add_rol') == 'on' and dicc['add_rol']:
+            rol['permisos'].append(4)
             dicc['add_rol'] = True
         else:
-            rol.permisos.remove(4)
             dicc['add_rol'] = False
+            if 4 in rol['permisos']:
+                rol['permisos'].remove(4)
+                
 
-        if request.POST.get('change_rol') == 'on':
-            rol.permisos.add(5)
-            dicc['change_rol'] = True
+        if request.POST.get('changue_rol') == 'on' and dicc['changue_rol']:
+            rol['permisos'].append(5)
+            dicc['changue_rol'] = True
         else:
-            rol.permisos.remove(5)
-            dicc['change_rol'] = False
+            dicc['changue_rol'] = False
+            if 5 in rol['permisos']:
+                rol['permisos'].remove(5)
+                
 
-        if request.POST.get('delete_rol') == 'on':
-            rol.permisos.add(6)
+        if request.POST.get('delete_rol') == 'on' and dicc['delete_rol']:
+            rol['permisos'].append(6)
             dicc['delete_rol'] = True
         else:
-            rol.permisos.remove(6)
             dicc['delete_rol'] = False
+            if 6 in rol['permisos']:
+                rol['permisos'].remove(6)
+                
 
-        if request.POST.get('add_user') == 'on':
-            rol.permisos.add(1)
+        if request.POST.get('add_user') == 'on' and dicc['add_user']:
+            rol['permisos'].append(1)
             dicc['add_user'] = True
         else:
-            rol.permisos.remove(1)
             dicc['add_user'] = False
+            if 1 in rol['permisos']:
+                rol['permisos'].remove(1)
+                
 
-        if request.POST.get('change_user') == 'on':
-            rol.permisos.add(2)
-            dicc['change_user'] = True
+        if request.POST.get('changue_user') == 'on' and dicc['changue_user']:
+            rol['permisos'].append(2)
+            dicc['changue_user'] = True
         else:
-            rol.permisos.remove(2)
-            dicc['change_user'] = False
+            dicc['changue_user'] = False
+            if 2 in rol['permisos']:
+                rol['permisos'].remove(2)
 
-        if request.POST.get('delete_user') == 'on':
-            rol.permisos.add(3)
+
+        if request.POST.get('delete_user') == 'on' and dicc['delete_user']:
+            rol['permisos'].append(3)
             dicc['delete_user'] = True
         else:
-            rol.permisos.remove(3)
             dicc['delete_user'] = False
+            if 3 in rol['permisos']:
+                rol['permisos'].remove(3)
+                
 
-        rol.save()        
+        datos={'name': rol['name'], 'permisos': rol['permisos']}
+        response = requests.put('https://localhost:8000/api/rols/update/'+str(pk)+'/', data=datos, headers=headers, verify=False)
         exito = True
         return render(request, 'permissions-rol.html', {'rol': rol, 'permisos': dicc, 'exito': exito})
     else:

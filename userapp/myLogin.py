@@ -46,8 +46,10 @@ class Logout(LogoutView):
 
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
-        request.user.auth_token.delete()
-        auth_logout(request)
+        if request.user.is_authenticated:
+            request.user.auth_token.delete()
+            auth_logout(request)
+        
         next_page = self.get_next_page()
         if next_page:
             # Redirect to this page until the session has been cleared.
