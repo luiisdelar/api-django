@@ -150,7 +150,6 @@ def permissionsRol(request, pk):
             dicc['delete_rol'] = False
             rol['permisos'].remove(6)
         
-        print(rol['permisos'])
         datos={'name': rol['name'], 'permisos': rol['permisos']}
         response = requests.put('https://localhost:8000/api/rols/update/'+str(pk)+'/', data=datos, headers=headers, verify=False)
         exito = True
