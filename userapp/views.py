@@ -19,7 +19,7 @@ def verifiedEmail(request):
     verified = False
     if request.method == 'POST':
         if request.POST.get('verified_code') == request.user.verified_code:
-            datos = {'username': request.user.username, 'password': request.user.password, 'user_verified': True}
+            datos = {'username': request.user.username, 'password': request.user.password, 'user_verified': True, 'email': request.user.email}
             headers = {'Authorization': 'Token '+str(request.user.auth_token)}
             requests.put('https://localhost:8000/api/users/update/'+str(request.user.id)+'/', data=datos, verify=False, headers=headers)
             verified = True
